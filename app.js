@@ -71,7 +71,7 @@ const html = `
   </head>
   <body>
     <section>
-      Hello from Render!
+      Coming Soon!
     </section>
   </body>
 </html>
