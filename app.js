@@ -4,8 +4,9 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+const whitelist = process.env.CORSAllowedOrigin.split(',');
 
-var corsOptions = {
+const corsOptions = {
   // origin: 'http://example.com',
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
@@ -20,7 +21,7 @@ var corsOptions = {
 const app = express();
 // Use express.json() middleware to parse JSON bodies
 app.use(express.json());
- 
+
 const port = process.env.PORT || 3001;
 
 app.get("/", (req, res) => res.type('html').send(html));
@@ -32,7 +33,7 @@ app.post("/ask", cors(corsOptions), async (req, res) => {
   const response = await result.response;
   const text = response.text();
 
-  res.type('json').send({response: text});
+  res.type('json').send({ response: text });
 })
 
 const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`));
