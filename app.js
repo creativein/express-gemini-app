@@ -4,29 +4,16 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-const whitelist = process.env.CORSAllowedOrigin.split(',');
-
-const corsOptions = {
-  // origin: 'http://example.com',
-  origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true)
-    } else {
-      callback(new Error('Not allowed by CORS'))
-    }
-  },
-  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-}
-
 const app = express();
 // Use express.json() middleware to parse JSON bodies
 app.use(express.json());
+app.use(cors())
 
 const port = process.env.PORT || 3001;
 
 app.get("/", (req, res) => res.type('html').send(html));
 
-app.post("/ask", cors(corsOptions), async (req, res) => {
+app.post("/ask", async (req, res) => {
   payload = req.body;
   const prompt = payload.question;
   const result = await model.generateContent(prompt);
